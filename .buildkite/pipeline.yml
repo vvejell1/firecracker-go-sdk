@@ -108,8 +108,8 @@ steps:
   
   - label: ':book: examples'
     commands:
-      - "sudo -E PATH=$PATH FC_TEST_DATA_PATH=${FC_TEST_DATA_PATH} make -C examples/cmd/snapshotting run"
-      - "sudo -E PATH=$PATH FC_TEST_DATA_PATH=${FC_TEST_DATA_PATH} make -C examples/cmd/snapshotting clean"
+      - "sudo -E PATH=$FC_TEST_DATA_PATH:$PATH FC_TEST_DATA_PATH=${FC_TEST_DATA_PATH} make -C examples/cmd/snapshotting run"
+      - "sudo -E PATH=$FC_TEST_DATA_PATH:$PATH FC_TEST_DATA_PATH=${FC_TEST_DATA_PATH} make -C examples/cmd/snapshotting clean"
     agents:
       queue: "${BUILDKITE_AGENT_META_DATA_QUEUE:-default}"
       distro: "${BUILDKITE_AGENT_META_DATA_DISTRO}"
@@ -125,7 +125,7 @@ steps:
 
   - label: ':hammer: root tests'
     commands:
-      - "sudo -E PATH=$PATH FC_TEST_TAP=fc-root-tap${BUILDKITE_BUILD_NUMBER} FC_TEST_DATA_PATH=${FC_TEST_DATA_PATH} make test EXTRAGOARGS='-v -count=1 -race' DISABLE_ROOT_TESTS="
+      - "sudo -E PATH=$FC_TEST_DATA_PATH:$PATH FC_TEST_TAP=fc-root-tap${BUILDKITE_BUILD_NUMBER} FC_TEST_DATA_PATH=${FC_TEST_DATA_PATH} make test EXTRAGOARGS='-v -count=1 -race' DISABLE_ROOT_TESTS="
     agents:
       queue: "${BUILDKITE_AGENT_META_DATA_QUEUE:-default}"
       distro: "${BUILDKITE_AGENT_META_DATA_DISTRO}"
@@ -137,7 +137,7 @@ steps:
       FC_TEST_JAILER_BIN: "${FC_TEST_DATA_PATH}/jailer-main"
       DOCKER_IMAGE_TAG: "$BUILDKITE_BUILD_NUMBER"
     commands:
-      - "sudo -E PATH=$PATH FC_TEST_TAP=fc-mst-tap${BUILDKITE_BUILD_NUMBER} make test EXTRAGOARGS='-v -count=1 -race' DISABLE_ROOT_TESTS="
+      - "sudo -E PATH=$FC_TEST_DATA_PATH:$PATH FC_TEST_TAP=fc-mst-tap${BUILDKITE_BUILD_NUMBER} make test EXTRAGOARGS='-v -count=1 -race' DISABLE_ROOT_TESTS="
     agents:
       queue: "${BUILDKITE_AGENT_META_DATA_QUEUE:-default}"
       distro: "${BUILDKITE_AGENT_META_DATA_DISTRO}"
