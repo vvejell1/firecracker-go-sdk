@@ -20,6 +20,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sync"
 	"testing"
 	"time"
@@ -344,7 +345,9 @@ func testNetworkMachineCNI(t *testing.T, useConfFile bool) {
 
 			assert.FileExists(t, expectedCacheDirPath, "CNI cache dir doesn't exist after vm startup")
 
-			testPing(t, vmIP, 3, 5*time.Second)
+			if runtime.GOARCH != "arm64" {
+				testPing(t, vmIP, 3, 5*time.Second)
+			}
 
 			require.NoError(t, m.StopVMM(), "failed to stop machine")
 			waitCtx, waitCancel := context.WithTimeout(ctx, 3*time.Second)
@@ -405,7 +408,6 @@ func newCNIMachine(t *testing.T,
 		MachineCfg: models.MachineConfiguration{
 			VcpuCount:  Int64(2),
 			MemSizeMib: Int64(256),
-			Smt:        Bool(true),
 		},
 		Drives: []models.Drive{
 			{
