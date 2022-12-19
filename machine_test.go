@@ -27,7 +27,6 @@ import (
 	"os/signal"
 	"path/filepath"
 	"regexp"
-	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -866,10 +865,8 @@ func TestStopVMMCleanup(t *testing.T) {
 
 func testShutdown(ctx context.Context, t *testing.T, m *Machine) {
 	err := m.Shutdown(ctx)
-	if runtime.GOARCH == "arm64" {
-		assert.ErrorIs(t, err, ErrGraceShutdown)
-	} else {
-		assert.NoError(t, err, "machine.Shutdown() failed")
+	if err != nil {
+		t.Errorf("machine.Shutdown() failed: %s", err)
 	}
 }
 

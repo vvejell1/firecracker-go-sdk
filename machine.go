@@ -66,9 +66,6 @@ type SeccompConfig struct {
 // be started again.
 var ErrAlreadyStarted = errors.New("firecracker: machine already started")
 
-// ErrGraceShutdown signifies that the Machine will shutdown gracefully and SendCtrlAltDelete is unable to send
-var ErrGraceShutdown = errors.New("Shutdown gracefully: SendCtrlAltDelete is not supported if the arch is ARM64")
-
 type MMDSVersion string
 
 const (
@@ -462,8 +459,9 @@ func (m *Machine) Shutdown(ctx context.Context) error {
 	m.logger.Debug("Called machine.Shutdown()")
 	if runtime.GOARCH != "arm64" {
 		return m.sendCtrlAltDel(ctx)
+	} else {
+		return m.StopVMM()
 	}
-	return ErrGraceShutdown
 }
 
 // Wait will wait until the firecracker process has finished.  Wait is safe to
