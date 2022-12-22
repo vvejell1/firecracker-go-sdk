@@ -24,6 +24,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -456,7 +457,11 @@ func (m *Machine) Start(ctx context.Context) error {
 // Shutdown requests a clean shutdown of the VM by sending CtrlAltDelete on the virtual keyboard
 func (m *Machine) Shutdown(ctx context.Context) error {
 	m.logger.Debug("Called machine.Shutdown()")
-	return m.sendCtrlAltDel(ctx)
+	if runtime.GOARCH != "arm64" {
+		return m.sendCtrlAltDel(ctx)
+	} else {
+		return m.StopVMM()
+	}
 }
 
 // Wait will wait until the firecracker process has finished.  Wait is safe to
