@@ -254,7 +254,7 @@ func testNetworkMachineCNI(t *testing.T, useConfFile bool) {
 	}
 	fctesting.RequiresRoot(t)
 
-	cniBinPath := []string{testDataBin, "/opt/cni/bin"}
+	cniBinPath := []string{testDataBin}
 
 	dir, err := ioutil.TempDir("", fsSafeTestName.Replace(t.Name()))
 	require.NoError(t, err)
